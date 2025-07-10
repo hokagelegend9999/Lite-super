@@ -1,8 +1,8 @@
 # =========================================
 # Quick Setup | Script Setup Manager
-# Edition : Stable Edition Lite  2.0
+# Edition : Stable Edition Lite-Super
 # Auther  : Hokage Legend
-# (C) Copyright 2023
+# (C) Copyright 2025
 # =========================================
 # pewarna hidup
 BGreen='\e[1;32m'
