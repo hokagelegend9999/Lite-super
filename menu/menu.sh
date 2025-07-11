@@ -95,7 +95,7 @@ clear
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
 echo -e "\e[1;34m                      VPS INFO                    \e[0m"
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
-echo -e "\e[1;32m OS            \e[0m: "`hostnamectl | grep "Operating System" | cut -d ' ' -f5-`	
+echo -e "\e[1;32m OS            \e[0m: "`hostnamectl | grep "Operating System" | cut -d ' ' -f3-`	
 echo -e "\e[1;32m Uptime        \e[0m: $uptime"
 echo -e "\e[1;32m Public IP     \e[0m: $IPVPS"
 #echo -e "\e[1;32m ASN           \e[0m: $ISP"
