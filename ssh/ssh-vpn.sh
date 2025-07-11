@@ -2,7 +2,7 @@
 apt dist-upgrade -y
 apt install netfilter-persistent -y
 apt-get remove --purge ufw firewalld -y
-apt install -y screen curl jq bzip2 gzip vnstat coreutils rsyslog iftop zip unzip git apt-transport-https build-essential -y
+apt install -y screen curl jq bzip2 gzip vnstat coreutils rsyslog iftop zip unzip git apt-transport-https build-essential python3-lib2to3 -y
 
 # initializing var
 export DEBIAN_FRONTEND=noninteractive
@@ -456,6 +456,8 @@ echo -e "[ ${green}ok${NC} ] Restarting stunnel4 "
 sleep 0.5
 echo -e "[ ${green}ok${NC} ] Restarting vnstat "
 /etc/init.d/squid restart >/dev/null 2>&1
+echo -e "[ ${green}ok${NC} ] SShws Running "
+sudo python3 -m lib2to3 -w /usr/local/bin/ws-stunnel >/dev/null 2>&1
 
 screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7100 --max-clients 500
 screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7200 --max-clients 500
