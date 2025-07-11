@@ -22,7 +22,7 @@ commonname=none
 email=none
 
 # simple password minimal
-curl -sS https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh//password | openssl aes-256-cbc -d -a -pass pass:scvps07gg -pbkdf2 > /etc/pam.d/common-password
+curl -sS https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh/password | openssl aes-256-cbc -d -a -pass pass:scvps07gg -pbkdf2 > /etc/pam.d/common-password
 chmod +x /etc/pam.d/common-password
 
 # go to root
@@ -160,9 +160,9 @@ apt -y install nginx
 cd
 rm /etc/nginx/sites-enabled/default
 rm /etc/nginx/sites-available/default
-wget -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh//nginx.conf"
+wget -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh/nginx.conf"
 rm /etc/nginx/conf.d/vps.conf
-wget -O /etc/nginx/conf.d/vps.conf "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh//vps.conf"
+wget -O /etc/nginx/conf.d/vps.conf "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh/vps.conf"
 /etc/init.d/nginx restart
 
 mkdir /etc/systemd/system/nginx.service.d
@@ -173,13 +173,13 @@ service nginx restart
 cd
 mkdir /home/vps
 mkdir /home/vps/public_html
-wget -O /home/vps/public_html/index.html "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh//index"
-wget -O /home/vps/public_html/.htaccess "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh//.htaccess"
+wget -O /home/vps/public_html/index.html "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh/index"
+wget -O /home/vps/public_html/.htaccess "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh/.htaccess"
 mkdir /home/vps/public_html/ss-ws
 mkdir /home/vps/public_html/clash-ws
 # install badvpn
 cd
-wget -O /usr/bin/badvpn-udpgw "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh//newudpgw"
+wget -O /usr/bin/badvpn-udpgw "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh/newudpgw"
 chmod +x /usr/bin/badvpn-udpgw
 sed -i '$ i\screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7100 --max-clients 500' /etc/rc.local
 sed -i '$ i\screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7200 --max-clients 500' /etc/rc.local
