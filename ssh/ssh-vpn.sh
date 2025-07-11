@@ -233,6 +233,7 @@ client = no
 socket = a:SO_REUSEADDR=1
 socket = l:TCP_NODELAY=1
 socket = r:TCP_NODELAY=1
+pid = /var/run/stunnel4/stunnel4.pid
 
 [dropbear]
 accept = 222
