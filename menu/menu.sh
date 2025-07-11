@@ -36,7 +36,7 @@ days=$(expr ${stampDiff} / 86400)
 remainingDays=$(expr 90 - ${days})
 tlsStatus=${remainingDays}
 if [[ ${remainingDays} -le 0 ]]; then
-	tlsStatus="expired"
+        tlsStatus="expired"
 fi
 # OS Uptime
 uptime="$(uptime -p | cut -d " " -f 2-10)"
@@ -54,7 +54,47 @@ dmon="$(vnstat -i eth0 -m | grep "`date +"%b '%y"`" | awk '{print $3" "substr ($
 umon="$(vnstat -i eth0 -m | grep "`date +"%b '%y"`" | awk '{print $6" "substr ($7, 1, 1)}')"
 tmon="$(vnstat -i eth0 -m | grep "`date +"%b '%y"`" | awk '{print $9" "substr ($10, 1, 1)}')"
 # user
-Exp2=$(curl -sSL https://github.com/hokagelegend9999/ijin/raw/refs/heads/main/lite | grep $MYIP | awk '{print $2}')
+EXPIRED_DATE_OR_LIFETIME=$(curl -sSL https://github.com/hokagelegend9999/ijin/raw/refs/heads/main/lite | grep "$MYIP" | awk '{print $3}')
+
+REMAINING_STATUS=""
+
+if [ -z "$EXPIRED_DATE_OR_LIFETIME" ]; then
+    # Jika tidak ada IP yang cocok atau bidah ke-3 kosong
+    REMAINING_STATUS="Data tidak ditemukan"
+elif [ "$EXPIRED_DATE_OR_LIFETIME" = "Lifetime" ]; then
+    REMAINING_STATUS="Lifetime"
+else
+    # Mengambil tanggal hari ini dalam format YYYY-MM-DD
+    CURRENT_DATE_UNIX=$(date +%s) # Timestamp saat ini dalam detik
+
+    # Mengubah tanggal kadaluwarsa dari file ke timestamp dalam detik
+    # Pastikan format tanggal di GitHub adalah YYYY-MM-DD
+    EXPIRED_DATE_UNIX=$(date -d "$EXPIRED_DATE_OR_LIFETIME" +%s 2>/dev/null)
+
+    # Periksa apakah konversi tanggal berhasil (2>/dev/null menyembunyikan error date jika format salah)
+    if [ -z "$EXPIRED_DATE_UNIX" ]; then
+        REMAINING_STATUS="Format Tanggal Invalid"
+    elif [ "$EXPIRED_DATE_UNIX" -lt "$CURRENT_DATE_UNIX" ]; then
+        REMAINING_STATUS="Expired"
+    elif [ "$EXPIRED_DATE_UNIX" -eq "$CURRENT_DATE_UNIX" ]; then
+        REMAINING_STATUS="Hari ini"
+    else
+        # Hitung selisih dalam detik, lalu ubah ke hari
+        DIFF_SECONDS=$((EXPIRED_DATE_UNIX - CURRENT_DATE_UNIX))
+        DIFF_DAYS=$((DIFF_SECONDS / 86400)) # 86400 detik = 1 hari
+
+        if [ "$DIFF_DAYS" -lt 30 ]; then
+            REMAINING_STATUS="$DIFF_DAYS hari lagi"
+        elif [ "$DIFF_DAYS" -lt 365 ]; then
+            MONTHS=$((DIFF_DAYS / 30)) # Perkiraan bulan
+            REMAINING_STATUS="$MONTHS bulan lagi"
+        else
+            YEARS=$((DIFF_DAYS / 365)) # Perkiraan tahun
+            REMAINING_STATUS="$YEARS tahun lagi"
+        fi
+    fi
+fi
+Name=$(curl -sSL https://github.com/hokagelegend9999/ijin/raw/refs/heads/main/lite | grep $MYIP | awk '{print $2}')
 # Getting CPU Information
 cpu_usage1="$(ps aux | awk 'BEGIN {sum=0} {sum+=$3}; END {print sum}')"
 cpu_usage="$((${cpu_usage1/\.*} / ${corediilik:-1}))"
@@ -91,24 +131,24 @@ if [[ $ssh_ws == "running" ]]; then
 else
     status_ws="${RED}OFF${NC}"
 fi
-clear 
+clear
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
 echo -e "\e[1;34m                      VPS INFO                    \e[0m"
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
-echo -e "\e[1;32m OS            \e[0m: "`hostnamectl | grep "Operating System" | cut -d ' ' -f3-`	
+echo -e "\e[1;32m OS            \e[0m: "`hostnamectl | grep "Operating System" | cut -d ' ' -f3-`
 echo -e "\e[1;32m Uptime        \e[0m: $uptime"
 echo -e "\e[1;32m Public IP     \e[0m: $IPVPS"
 #echo -e "\e[1;32m ASN           \e[0m: $ISP"
 echo -e "\e[1;32m CITY          \e[0m: $CITY"
-echo -e "\e[1;32m DOMAIN        \e[0m: $domain"	
+echo -e "\e[1;32m DOMAIN        \e[0m: $domain"
 echo -e "\e[1;32m DATE & TIME   \e[0m: $DATE2"
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
 echo -e "\e[1;34m               STATUS INFO                        \e[0m"
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
 echo -e ""
-echo -e "\e[0m RAM USED   \e[34m: $uram MB    | \e[0m NGINX   \e[34m: ${status_nginx}"	
-echo -e "\e[0m RAM TOTAL  \e[34m: $tram MB    | \e[0m XRAY    \e[34m: ${status_xray}"  
-echo -e "\e[34m                               | \e[0m SSH WS  \e[34m: ${status_ws}"
+echo -e "\e[0m RAM USED   \e[34m: $uram MB    | \e[0m NGINX   \e[34m: ${status_nginx}"
+echo -e "\e[0m RAM TOTAL  \e[34m: $tram MB   | \e[0m XRAY    \e[34m: ${status_xray}"
+echo -e "\e[34m                        | \e[0m SSH WS  \e[34m: ${status_ws}"
 echo -e ""
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
 echo -e "\e[1;34m                       MENU                       \e[0m"
@@ -122,10 +162,13 @@ echo -e "\e[1;36m 5 \e[0m: Menu Shadowsocks        \e[1;36m x \e[0m: Exit Script
 echo -e   ""
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
 echo -e "\e[1;32m Client Name \e[0m: $Name"
-echo -e "\e[1;32m Expired     \e[0m: $Exp2"
+echo -e "\e[1;32m Expired     \e[0m: $REMAINING_STATUS"
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
 echo -e   ""
-echo -e "\e[1;36m --------------------t.me/givpn-------------------\e[0m"
+echo -e "\e[1;36m --------SCRIPT VPN PREMIUM LITE SUPER-------------\e[0m"
+echo -e   ""
+echo -e   ""
+echo -e "\e[1;36m ------------DEVELOP HOKAGE LEGEND---------------\e[0m"
 echo -e   ""
 read -p " Select menu :  "  opt
 echo -e   ""
@@ -142,4 +185,3 @@ case $opt in
 x) exit ;;
 *) echo "Anda salah tekan " ; sleep 1 ; menu ;;
 esac
-
