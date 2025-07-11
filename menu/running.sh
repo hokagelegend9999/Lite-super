@@ -38,7 +38,7 @@ clear
 source /etc/os-release
 Versi_OS=$VERSION
 ver=$VERSION_ID
-Tipe=$NAME
+Tipe=$(hostnamectl | grep "Operating System" | cut -d ' ' -f3-)
 URL_SUPPORT=$HOME_URL
 basedong=$ID
 
@@ -195,8 +195,49 @@ kernelku=$(uname -r)
 
 # DNS PATCH
 #tipeos2=$(uname -m)
-Name=$"givpn"
-Exp=$"Lifetime"
+Name=$(curl -sSL https://github.com/hokagelegend9999/ijin/raw/refs/heads/main/lite | grep $MYIP | awk '{print $2}')
+# user
+EXPIRED_DATE_OR_LIFETIME=$(curl -sSL https://github.com/hokagelegend9999/ijin/raw/refs/heads/main/lite | grep "$MYIP" | awk '{print $3}')
+
+REMAINING_STATUS=""
+
+if [ -z "$EXPIRED_DATE_OR_LIFETIME" ]; then
+    # Jika tidak ada IP yang cocok atau bidah ke-3 kosong
+    REMAINING_STATUS="Data tidak ditemukan"
+elif [ "$EXPIRED_DATE_OR_LIFETIME" = "Lifetime" ]; then
+    REMAINING_STATUS="Lifetime"
+else
+    # Mengambil tanggal hari ini dalam format YYYY-MM-DD
+    CURRENT_DATE_UNIX=$(date +%s) # Timestamp saat ini dalam detik
+
+    # Mengubah tanggal kadaluwarsa dari file ke timestamp dalam detik
+    # Pastikan format tanggal di GitHub adalah YYYY-MM-DD
+    EXPIRED_DATE_UNIX=$(date -d "$EXPIRED_DATE_OR_LIFETIME" +%s 2>/dev/null)
+
+    # Periksa apakah konversi tanggal berhasil (2>/dev/null menyembunyikan error date jika format salah)
+    if [ -z "$EXPIRED_DATE_UNIX" ]; then
+        REMAINING_STATUS="Format Tanggal Invalid"
+    elif [ "$EXPIRED_DATE_UNIX" -lt "$CURRENT_DATE_UNIX" ]; then
+        REMAINING_STATUS="Expired"
+    elif [ "$EXPIRED_DATE_UNIX" -eq "$CURRENT_DATE_UNIX" ]; then
+        REMAINING_STATUS="Hari ini"
+    else
+        # Hitung selisih dalam detik, lalu ubah ke hari
+        DIFF_SECONDS=$((EXPIRED_DATE_UNIX - CURRENT_DATE_UNIX))
+        DIFF_DAYS=$((DIFF_SECONDS / 86400)) # 86400 detik = 1 hari
+
+        if [ "$DIFF_DAYS" -lt 30 ]; then
+            REMAINING_STATUS="$DIFF_DAYS hari lagi"
+        elif [ "$DIFF_DAYS" -lt 365 ]; then
+            MONTHS=$((DIFF_DAYS / 30)) # Perkiraan bulan
+            REMAINING_STATUS="$MONTHS bulan lagi"
+        else
+            YEARS=$((DIFF_DAYS / 365)) # Perkiraan tahun
+            REMAINING_STATUS="$YEARS tahun lagi"
+        fi
+    fi
+fi
+
 # GETTING DOMAIN NAME
 Domen="$(cat /etc/xray/domain)"
 echo -e ""
@@ -212,8 +253,8 @@ echo -e "\e[1;33m -------------------------------------------------\e[0m"
 echo -e "\e[1;34m              SUBSCRIPTION INFORMATION            \e[0m"
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
 echo -e "\e[1;32m Client Name \e[0m: $Name"
-echo -e "\e[1;32m Exp Script  \e[0m: $Exp"
-echo -e "\e[1;32m Version     \e[0m: 1.0"
+echo -e "\e[1;32m Exp Script  \e[0m: $REMAINING_STATUS"
+echo -e "\e[1;32m Version     \e[0m: 3.0"
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
 echo -e "\e[1;34m                SERVICE INFORMATION               \e[0m"
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
@@ -232,7 +273,7 @@ echo -e "\e[1;32m Shadowsocks          \e[0m: $status_shadowsocks"
 echo -e "\e[1;32m Websocket TLS        \e[0m: $swstls"
 echo -e "\e[1;32m Websocket None TLS   \e[0m: $swstls"
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
-echo -e "\e[1;34m                     t.me/givpn                   \e[0m"
+echo -e "\e[1;34m                HOKAGE LEGEND STORE               \e[0m"
 echo -e "\e[1;33m -------------------------------------------------\e[0m"
 echo ""
 read -n 1 -s -r -p "Press any key to back on menu"
