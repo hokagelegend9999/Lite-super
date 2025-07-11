@@ -329,6 +329,8 @@ wget -O clearcache "https://raw.githubusercontent.com/hokagelegend9999/Lite-supe
 wget -O m-ssws "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/menu/m-ssws.sh"
 wget -O m-trojan "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/menu/m-trojan.sh"
 wget -O m-bkp "https://github.com/hokagelegend9999/Lite-super/raw/refs/heads/main/menu/m-bkp"
+wget -O backup "https://github.com/hokagelegend9999/Lite-super/raw/refs/heads/main/menu/backup"
+wget -O restore "https://github.com/hokagelegend9999/Lite-super/raw/refs/heads/main/menu/restore"
 # menu ssh ovpn
 wget -O m-sshovpn "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/menu/m-sshovpn.sh"
 wget -O usernew "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh/usernew.sh"
@@ -395,6 +397,8 @@ chmod +x xp
 chmod +x sshws
 chmod +x m-dns
 chmod +x m-bkp
+chmod +x backup
+chmod +x restore
 cd
 
 
