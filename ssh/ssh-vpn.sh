@@ -350,7 +350,7 @@ wget -O m-system "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/
 wget -O m-domain "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/menu/m-domain.sh"
 wget -O add-host "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh//add-host.sh"
 wget -O certv2ray "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/xray/certv2ray.sh"
-wget -O speedtest "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/ssh//speedtest_cli.py"
+wget -O speedtest "https://github.com/hokagelegend9999/Lite-super/raw/refs/heads/main/ssh/speedtest_cli.py"
 wget -O auto-reboot "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/menu/auto-reboot.sh"
 wget -O restart "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/menu/restart.sh"
 wget -O bw "https://raw.githubusercontent.com/hokagelegend9999/Lite-super/refs/heads/main/menu/bw.sh"
