@@ -160,32 +160,48 @@ else
 gg="AM"
 fi
 curl -sS ipv4.icanhazip.com > /etc/myipvps
-echo ""
-echo "=================================================================="  | tee -a log-install.txt
-echo ""
-echo "   >>> Service & Port"  | tee -a log-install.txt
-echo "   - OpenSSH                  : 22"  | tee -a log-install.txt
-echo "   - SSH Websocket            : 80" | tee -a log-install.txt
-echo "   - SSH SSL Websocket        : 443" | tee -a log-install.txt
-echo "   - Stunnel4                 : 222, 777" | tee -a log-install.txt
-echo "   - Dropbear                 : 109, 143" | tee -a log-install.txt
-echo "   - Badvpn                   : 7100-7900" | tee -a log-install.txt
-echo "   - Nginx                    : 81" | tee -a log-install.txt
-echo "   - Vmess WS TLS             : 443" | tee -a log-install.txt
-echo "   - Vless WS TLS             : 443" | tee -a log-install.txt
-echo "   - Trojan WS TLS            : 443" | tee -a log-install.txt
-echo "   - Shadowsocks WS TLS       : 443" | tee -a log-install.txt
-echo "   - Vmess WS none TLS        : 80" | tee -a log-install.txt
-echo "   - Vless WS none TLS        : 80" | tee -a log-install.txt
-echo "   - Trojan WS none TLS       : 80" | tee -a log-install.txt
-echo "   - Shadowsocks WS none TLS  : 80" | tee -a log-install.txt
-echo "   - Vmess gRPC               : 443" | tee -a log-install.txt
-echo "   - Vless gRPC               : 443" | tee -a log-install.txt
-echo "   - Trojan gRPC              : 443" | tee -a log-install.txt
-echo "   - Shadowsocks gRPC         : 443" | tee -a log-install.txt
-echo -e ""
-echo ""
-echo "" | tee -a log-install.txt
+# Mendefinisikan lokasi file log secara absolut
+LOG_FILE="/root/log-install.txt"
+
+# Menghapus file log lama jika ada, untuk memastikan log ini bersih (opsional)
+rm -f $LOG_FILE
+
+echo "" | tee -a $LOG_FILE
+echo "=================================================================="  | tee -a $LOG_FILE
+echo "" | tee -a $LOG_FILE
+echo "   >>> Service & Port"  | tee -a $LOG_FILE
+echo "   - OpenSSH                 : 22"  | tee -a $LOG_FILE
+echo "   - SSH Websocket             : 80" | tee -a $LOG_FILE
+echo "   - SSH SSL Websocket         : 443" | tee -a $LOG_FILE
+echo "   - Stunnel4                  : 222, 777" | tee -a $LOG_FILE
+echo "   - Dropbear                  : 109, 143" | tee -a $LOG_FILE
+echo "   - Badvpn                    : 7100-7900" | tee -a $LOG_FILE
+echo "   - Nginx                     : 81" | tee -a $LOG_FILE
+echo "   - Vmess WS TLS              : 443" | tee -a $LOG_FILE
+echo "   - Vless WS TLS              : 443" | tee -a $LOG_FILE
+echo "   - Trojan WS TLS             : 443" | tee -a $LOG_FILE
+echo "   - Shadowsocks WS TLS        : 443" | tee -a $LOG_FILE
+echo "   - Vmess WS none TLS         : 80" | tee -a $LOG_FILE
+echo "   - Vless WS none TLS         : 80" | tee -a $LOG_FILE
+echo "   - Trojan WS none TLS        : 80" | tee -a $LOG_FILE
+echo "   - Shadowsocks WS none TLS   : 80" | tee -a $LOG_FILE
+echo "   - Vmess gRPC                : 443" | tee -a $LOG_FILE
+echo "   - Vless gRPC                : 443" | tee -a $LOG_FILE
+echo "   - Trojan gRPC               : 443" | tee -a $LOG_FILE
+echo "   - Shadowsocks gRPC          : 443" | tee -a $LOG_FILE
+echo "" | tee -a $LOG_FILE
+echo "=================================================================="  | tee -a $LOG_FILE
+echo "" | tee -a $LOG_FILE
+
+# Bagian di bawah ini diasumsikan dari script asli Anda
+# rm /root/setup.sh >/dev/null 2>&1
+# rm /root/ins-xray.sh >/dev/null 2>&1
+# rm /root/insshws.sh >/dev/null 2>&1
+# secs_to_human "$(($(date +%s) - ${start}))" | tee -a $LOG_FILE
+
+# Menampilkan isi file log yang sudah pasti dibuat di /root/log-install.txt
+echo "Selesai. Menampilkan isi log:"
+cat $LOG_FILE
 rm /root/setup.sh >/dev/null 2>&1
 rm /root/ins-xray.sh >/dev/null 2>&1
 rm /root/insshws.sh >/dev/null 2>&1
