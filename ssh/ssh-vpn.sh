@@ -215,14 +215,40 @@ sed -i '/Port 22/a Port 22' /etc/ssh/sshd_config
 
 echo "=== Install Dropbear ==="
 # install dropbear
+# Install Dropbear
 apt -y install dropbear
-sed -i 's/NO_START=1/NO_START=0/g' /etc/default/dropbear
-sed -i 's/DROPBEAR_PORT=22/DROPBEAR_PORT=143/g' /etc/default/dropbear
-sed -i 's/DROPBEAR_EXTRA_ARGS=/DROPBEAR_EXTRA_ARGS="-p 50000 -p 109 -p 110 -p 69"/g' /etc/default/dropbear
+
+# Pastikan konfigurasi dropbear di /etc/default/dropbear sudah benar
+
+# Atur agar Dropbear aktif
+grep -q '^NO_START=' /etc/default/dropbear && \
+  sed -i 's/^NO_START=.*/NO_START=0/' /etc/default/dropbear || \
+  echo 'NO_START=0' >> /etc/default/dropbear
+
+# Ganti port default dropbear ke 143
+grep -q '^DROPBEAR_PORT=' /etc/default/dropbear && \
+  sed -i 's/^DROPBEAR_PORT=.*/DROPBEAR_PORT=143/' /etc/default/dropbear || \
+  echo 'DROPBEAR_PORT=143' >> /etc/default/dropbear
+
+# Tambahkan port tambahan untuk dropbear
+grep -q '^DROPBEAR_EXTRA_ARGS=' /etc/default/dropbear && \
+  sed -i 's|^DROPBEAR_EXTRA_ARGS=.*|DROPBEAR_EXTRA_ARGS="-p 50000 -p 109 -p 110 -p 69"|' /etc/default/dropbear || \
+  echo 'DROPBEAR_EXTRA_ARGS="-p 50000 -p 109 -p 110 -p 69"' >> /etc/default/dropbear
+
+# Tambahkan shell non-login ke daftar shell yang valid
 echo "/bin/false" >> /etc/shells
 echo "/usr/sbin/nologin" >> /etc/shells
-/etc/init.d/ssh restart
-/etc/init.d/dropbear restart
+
+# Perbaiki file unit dropbear agar tidak pakai variabel yang gagal di-expand
+sed -i 's|^ExecStart=.*|ExecStart=/usr/sbin/dropbear -EF -p 109 -p 143 -p 50000 -p 69|' /usr/lib/systemd/system/dropbear.service
+
+# Reload systemd dan restart service
+systemctl daemon-reexec
+systemctl daemon-reload
+systemctl restart ssh
+systemctl restart dropbear
+systemctl status dropbear --no-pager
+
 
 cd
 # install stunnel
