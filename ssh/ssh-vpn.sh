@@ -214,7 +214,7 @@ sed -i '/Port 22/a Port 22' /etc/ssh/sshd_config
 /etc/init.d/ssh restart
 
 echo "=== Install Dropbear ==="
-# install dropbear
+
 # Install Dropbear
 apt -y install dropbear
 
@@ -230,24 +230,29 @@ grep -q '^DROPBEAR_PORT=' /etc/default/dropbear && \
   sed -i 's/^DROPBEAR_PORT=.*/DROPBEAR_PORT=143/' /etc/default/dropbear || \
   echo 'DROPBEAR_PORT=143' >> /etc/default/dropbear
 
-# Tambahkan port tambahan untuk dropbear
+# Tambahkan port tambahan + banner untuk dropbear
 grep -q '^DROPBEAR_EXTRA_ARGS=' /etc/default/dropbear && \
-  sed -i 's|^DROPBEAR_EXTRA_ARGS=.*|DROPBEAR_EXTRA_ARGS="-p 50000 -p 109 -p 110 -p 69"|' /etc/default/dropbear || \
-  echo 'DROPBEAR_EXTRA_ARGS="-p 50000 -p 109 -p 110 -p 69"' >> /etc/default/dropbear
+  sed -i 's|^DROPBEAR_EXTRA_ARGS=.*|DROPBEAR_EXTRA_ARGS="-p 50000 -p 109 -p 110 -p 69 -b /etc/issue.net"|' /etc/default/dropbear || \
+  echo 'DROPBEAR_EXTRA_ARGS="-p 50000 -p 109 -p 110 -p 69 -b /etc/issue.net"' >> /etc/default/dropbear
 
 # Tambahkan shell non-login ke daftar shell yang valid
 echo "/bin/false" >> /etc/shells
 echo "/usr/sbin/nologin" >> /etc/shells
 
+# Buat banner untuk Dropbear
+cat > /etc/issue.net <<EOF
+⚠️ WARNING: Unauthorized access to this system is prohibited.
+🔒 All activity is monitored and recorded.
+EOF
+
 # Perbaiki file unit dropbear agar tidak pakai variabel yang gagal di-expand
-sed -i 's|^ExecStart=.*|ExecStart=/usr/sbin/dropbear -EF -p 109 -p 143 -p 50000 -p 69|' /usr/lib/systemd/system/dropbear.service
+sed -i 's|^ExecStart=.*|ExecStart=/usr/sbin/dropbear -EF -p 109 -p 143 -p 50000 -p 69 -b /etc/issue.net|' /usr/lib/systemd/system/dropbear.service
 
 # Reload systemd dan restart service
 systemctl daemon-reexec
 systemctl daemon-reload
 systemctl restart ssh
 systemctl restart dropbear
-systemctl status dropbear --no-pager
 
 
 cd
